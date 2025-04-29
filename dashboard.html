@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>マイプロジェクト</title>
-    <link rel="stylesheet" href="styles/main.css">
+  <meta charset="UTF-8">
+  <title>ダッシュボード</title>
+  <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <header>
-        <h1>マイプロジェクト一覧</h1>
-        <button onclick="logout()">ログアウト</button>
-    </header>
+  <h2>ダッシュボード</h2>
+  <button onclick="logout()">ログアウト</button>
+  <h3>新しいプロジェクト作成</h3>
+  <input type="text" id="project-name" placeholder="プロジェクト名">
+  <button onclick="saveProject()">保存する</button>
 
-    <main>
-        <button onclick="createNewProject()">新しいプロジェクト作成</button>
-        <div id="projects"></div>
-    </main>
+  <h3>保存済みプロジェクト</h3>
+  <ul id="project-list"></ul>
 
-    <script src="scripts/dashboard.js"></script>
+  <script src="scripts/dashboard.js"></script>
 </body>
 </html>
