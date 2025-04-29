@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>ビデオ編集アプリ</title>
-    <link rel="stylesheet" href="styles/main.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Web Premiere風アプリ</title>
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 <body>
-    <header>
-        <h1>ビデオ編集</h1>
-        <button onclick="saveProject()">保存</button>
-        <button onclick="goBack()">ダッシュボードへ戻る</button>
-    </header>
+  <header>
+    <div id="toolbar">
+      <!-- ヘッダーは空にするか、後でタイトルとか入れてもいい -->
+    </div>
+  </header>
 
-    <main>
-        <div class="toolbar">
-            <button>選択</button>
-            <button>分割</button>
-            <button>横書きテロップ</button>
-            <button>縦書きテロップ</button>
-            <button>AIツール</button>
-        </div>
+  <main>
+    <div class="top-panels">
+      <section id="source-monitor">
+        <h3>ソースモニター</h3>
+        <div id="source-list"></div>
+      </section>
 
-        <div class="editor">
-            <div class="timeline" id="timeline">
-                <!-- ここに素材をドラッグ＆ドロップ -->
-            </div>
-        </div>
-    </main>
+      <section id="program-monitor">
+        <h3>プログラムモニター</h3>
+        <video id="program-video" controls></video>
+      </section>
+    </div>
 
-    <script src="scripts/app.js"></script>
+    <div class="middle-panels">
+      <section id="project-panel">
+        <h3>プロジェクトパネル</h3>
+        <input type="file" id="file-input" multiple />
+        <div id="project-items"></div>
+      </section>
+
+      <section id="tool-bar">
+        <button id="select-tool">選択</button>
+        <button id="split-tool">分割</button>
+        <button id="text-horizontal">横書きテロップ</button>
+        <button id="text-vertical">縦書きテロップ</button>
+        <button id="ai-tool">AIツール</button>
+      </section>
+
+      <section id="timeline-panel">
+        <h3>タイムラインパネル</h3>
+        <div id="timeline"></div>
+      </section>
+
+      <section id="audio-meter">
+        <h3>オーディオメーター</h3>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1" />
+      </section>
+    </div>
+  </main>
+
+  <script src="main.js"></script>
 </body>
 </html>
