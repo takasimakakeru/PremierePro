@@ -1,110 +1,61 @@
-let selectedAudioElement = null;
+let projectData = {
+  clips: [],
+  textOverlays: []
+};
 
-document.getElementById("file-input").addEventListener("change", function (e) {
-  const files = Array.from(e.target.files);
-  const projectItems = document.getElementById("project-items");
-  const sourceList = document.getElementById("source-list");
+function addClip(fileURL, type) {
+  projectData.clips.push({ fileURL, type });
+  renderTimeline();
+}
 
-  files.forEach((file) => {
-    const url = URL.createObjectURL(file);
-    let element;
+function addTextOverlay(text, position) {
+  projectData.textOverlays.push({ text, position });
+  renderTimeline();
+}
 
-    if (file.type.startsWith("image/")) {
-      element = document.createElement("img");
-      element.src = url;
-    } else if (file.type.startsWith("video/")) {
-      element = document.createElement("video");
-      element.src = url;
-      element.controls = true;
-      element.width = 100;
-    } else if (file.type.startsWith("audio/")) {
-      element = document.createElement("audio");
-      element.src = url;
-      element.controls = true;
-    } else {
-      element = document.createElement("div");
-      element.textContent = "不明なファイル";
-    }
+function renderTimeline() {
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
 
-    element.classList.add("project-item");
-    projectItems.appendChild(element);
-
-    // ソースモニターにも追加（画像・動画）
-    if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
-      const thumb = element.cloneNode(true);
-      sourceList.appendChild(thumb);
-    }
-
-    // ドラッグでタイムラインに追加
-    element.draggable = true;
-    element.addEventListener("dragstart", (ev) => {
-      ev.dataTransfer.setData("fileURL", url);
-      ev.dataTransfer.setData("fileType", file.type);
-    });
+  projectData.clips.forEach(clip => {
+      const div = document.createElement('div');
+      div.className = 'timeline-clip';
+      div.textContent = clip.type.startsWith('video/') ? '🎬 Video' : '🖼 Image';
+      timeline.appendChild(div);
   });
-});
 
-document.getElementById("timeline").addEventListener("dragover", (e) => {
-  e.preventDefault();
-});
-
-document.getElementById("timeline").addEventListener("drop", (e) => {
-  e.preventDefault();
-  const fileURL = e.dataTransfer.getData("fileURL");
-  const fileType = e.dataTransfer.getData("fileType");
-  const timeline = document.getElementById("timeline");
-
-  let clip;
-  if (fileType.startsWith("image/")) {
-    clip = document.createElement("img");
-    clip.src = fileURL;
-    clip.style.width = "100px";
-  } else if (fileType.startsWith("video/")) {
-    clip = document.createElement("video");
-    clip.src = fileURL;
-    clip.controls = true;
-    clip.width = 100;
-  } else if (fileType.startsWith("audio/")) {
-    clip = document.createElement("audio");
-    clip.src = fileURL;
-    clip.controls = true;
-    clip.style.width = "200px";
-    clip.addEventListener("click", () => selectAudioClip(clip));
-  }
-
-  if (clip) {
-    clip.classList.add("timeline-clip");
-    timeline.appendChild(clip);
-    enableClipDrag(clip);
-  }
-});
-
-function enableClipDrag(clip) {
-  let offsetX;
-  clip.addEventListener("mousedown", (e) => {
-    offsetX = e.offsetX;
-    const onMouseMove = (moveEvent) => {
-      const timeline = document.getElementById("timeline");
-      let x = moveEvent.clientX - timeline.getBoundingClientRect().left - offsetX;
-      x = Math.max(0, Math.min(x, timeline.clientWidth - clip.offsetWidth));
-      clip.style.left = ${x}px;
-    };
-    const onMouseUp = () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-    };
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
+  projectData.textOverlays.forEach(overlay => {
+      const div = document.createElement('div');
+      div.className = 'timeline-clip';
+      div.textContent = '📝 ' + overlay.text;
+      timeline.appendChild(div);
   });
 }
 
-function selectAudioClip(audioElement) {
-  selectedAudioElement = audioElement;
-  document.getElementById("volume-slider").value = audioElement.volume;
+async function saveProject() {
+  const projectName = prompt('プロジェクト名を入力してください');
+  if (!projectName) return;
+
+  const response = await fetch('api/save_project.php', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          project_name: projectName,
+          project_data: JSON.stringify(projectData)
+      })
+  });
+
+  const data = await response.json();
+  if (data.success) {
+      alert('プロジェクト保存成功！');
+  } else {
+      alert('保存失敗: ' + data.message);
+  }
 }
 
-document.getElementById("volume-slider").addEventListener("input", (e) => {
-  if (selectedAudioElement) {
-    selectedAudioElement.volume = parseFloat(e.target.value);
-  }
-});
+// ページロード時、保存ボタンにイベント追加
+window.onload = () => {
+  document.getElementById('save-button').addEventListener('click', saveProject);
+};
