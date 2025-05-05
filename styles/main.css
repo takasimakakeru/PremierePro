@@ -145,4 +145,10 @@ main {
 #volume-slider {
   width: 100%;
 }
+#project-items img,
+#project-items video {
+  width: 32%;
+  max-height: 100px;
+  object-fit: cover;
+}
 
