@@ -15,8 +15,6 @@ header {
   border-bottom: 1px solid #444;
 }
 
-
-
 main {
   flex: 1;
   display: flex;
@@ -33,18 +31,31 @@ main {
   gap: 8px;
 }
 
-#source-monitor, #program-monitor {
+#source-monitor,
+#program-monitor {
   flex: 1;
   background: #1e1e1e;
   padding: 8px;
   border: 1px solid #444;
   overflow: auto;
+  position: relative;
 }
 
-#program-video {
+#program-video,
+#video-canvas {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  display: block;
+  background-color: black;
+}
+
+/* WebCodecs API canvas 用 */
+#video-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
 }
 
 /* --- 中段：プロジェクト・ツール・タイムライン・オーディオ --- */
@@ -53,7 +64,7 @@ main {
   flex: 2;
   gap: 8px;
   margin-top: 8px;
-  height: 0; /* これで均等分割される */
+  height: 0;
 }
 
 #project-panel {
@@ -76,7 +87,6 @@ main {
   gap: 8px;
 }
 
-/* ツールバーのボタン用スタイル */
 #tool-bar button {
   width: 48px;
   height: 48px;
@@ -90,7 +100,6 @@ main {
   justify-content: center;
   text-align: center;
 }
-
 
 #timeline-panel {
   flex: 3;
@@ -121,13 +130,15 @@ main {
 }
 
 /* --- 共通部品 --- */
-#source-list, #project-items {
+#source-list,
+#project-items {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-#source-list img, #project-items img {
+#source-list img,
+#project-items img {
   width: 25%;
   object-fit: cover;
 }
@@ -145,10 +156,10 @@ main {
 #volume-slider {
   width: 100%;
 }
+
 #project-items img,
 #project-items video {
   width: 32%;
   max-height: 100px;
   object-fit: cover;
 }
-
