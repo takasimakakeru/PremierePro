@@ -99,5 +99,48 @@ document.getElementById('file-input').addEventListener('change', function (event
     alert('AIツールは今後実装予定です'); 
   
   }); 
-  
+  // scripts/webcodecs-utils.js
+
+// 基本のカット編集：動画を読み込み、指定範囲のみデコードしてCanvasに描画する
+async function cutVideoSegment(file, startTime, endTime, canvas) {
+  const ctx = canvas.getContext("2d");
+  const video = document.createElement("video");
+  video.src = URL.createObjectURL(file);
+  video.muted = true;
+
+  await video.play(); // 再生開始してメタデータ読み取り
+
+  const duration = video.duration;
+  if (startTime >= duration || endTime > duration || startTime >= endTime) {
+    console.error("無効なカット範囲");
+    return;
+  }
+
+  const width = video.videoWidth;
+  const height = video.videoHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  video.currentTime = startTime;
+
+  let drawing = true;
+  video.addEventListener("seeked", () => {
+    const drawFrame = () => {
+      if (!drawing) return;
+
+      ctx.drawImage(video, 0, 0, width, height);
+
+      if (video.currentTime >= endTime) {
+        drawing = false;
+        console.log("カット完了");
+        return;
+      }
+
+      requestAnimationFrame(drawFrame);
+    };
+
+    drawFrame();
+  });
+}
+
    
