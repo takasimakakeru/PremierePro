@@ -142,5 +142,9 @@ async function cutVideoSegment(file, startTime, endTime, canvas) {
     drawFrame();
   });
 }
+const canvas = document.getElementById("program-canvas");
+const mainFile = /* Fileオブジェクト */;
+const pipFile = /* Fileオブジェクト */;
+renderPIP(mainFile, pipFile, canvas);
 
    
